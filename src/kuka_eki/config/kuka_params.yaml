@@ -1,0 +1,121 @@
+# ---------------------------------------------------------------------------
+# Site-specific configuration.
+#
+# Every value that used to be hard-coded in the source now lives here.
+# Copy this file, adjust it for your cell, and pass it to the bringup launch:
+#
+#     ros2 launch kuka_eki kuka_bringup.launch.py params_file:=/path/to/my_params.yaml
+# ---------------------------------------------------------------------------
+
+/**:
+  ros__parameters:
+    # Frames shared by every node in the system.
+    base_frame: base_link
+    flange_frame: link_6
+    tool_frame: drill_link
+
+kuka_eki_joint_server:
+  ros__parameters:
+    # KUKA controller reachable over EKI.
+    robot_ip: 172.31.1.147
+    motion_port: 54600
+    state_port: 54602
+
+    # Publishing / polling rates [s].
+    state_poll_period: 0.02
+    joint_state_publish_period: 0.1
+    motion_check_period: 0.1
+
+    # Motion is considered complete when ||target - current|| drops below this
+    # threshold [deg].
+    motion_tolerance_deg: 0.1
+
+    # Fraction of the controller's maximum velocity used for PTP moves.
+    max_velocity_scaling: 0.5
+
+    joint_names:
+      - joint_1
+      - joint_2
+      - joint_3
+      - joint_4
+      - joint_5
+      - joint_6
+      - end_effector_joint
+
+drill_control_server:
+  ros__parameters:
+    # Spindle controller. Often the same host as the robot, different port.
+    drill_ip: 172.31.1.147
+    drill_port: 54603
+
+    # How long the spindle stays energised per drill_on call [s].
+    spindle_on_duration: 2.0
+
+    # Socket connect/receive timeout [s].
+    socket_timeout: 5.0
+
+kuka_topic_mover:
+  ros__parameters:
+    # --- Camera topics -----------------------------------------------------
+    # camera_1 is mounted on the end effector, camera_2 gives the global view.
+    color_topic_cam1: /camera/camera_1/color/image_raw
+    color_topic_cam2: /camera/camera_2/color/image_raw
+    depth_topic_cam1: /camera/camera_1/aligned_depth_to_color/image_raw
+    camera_info_topic_cam1: /camera/camera_1/color/camera_info
+    camera_optical_frame: camera_1_color_optical_frame
+
+    # Intrinsics are taken from camera_info at runtime. These values are only a
+    # fallback for bag playback or a simulator that publishes no CameraInfo.
+    use_camera_info: true
+    fallback_camera_matrix: [380.7698974609375, 0.0, 316.40167236328125,
+                             0.0, 380.4576416015625, 240.86056518554688,
+                             0.0, 0.0, 1.0]
+    fallback_distortion: [-0.0585184171795845, 0.06957467645406723,
+                          0.00023011499433778226, 0.0003711151657626033,
+                          -0.022242674604058266]
+
+    # --- Orange-rectangle detection (HSV) ----------------------------------
+    hsv_lower: [5, 80, 80]
+    hsv_upper: [25, 255, 255]
+    morph_kernel_size: 5
+    morph_close_iterations: 3
+    morph_open_iterations: 1
+    # Contour area filter, as a fraction of the whole image.
+    min_area_ratio: 0.002
+    max_area_ratio: 0.15
+
+    # --- Depth validation --------------------------------------------------
+    min_depth_m: 0.05
+    max_depth_m: 10.0
+
+    # --- Drilling motion ---------------------------------------------------
+    approach_distance_m: 0.10
+    retract_distance_m: 0.10
+    default_drill_depth_mm: 5.0
+
+    # --- Output ------------------------------------------------------------
+    image_save_dir: ~/kuka_images
+    # External viewer launched for detection results. Leave empty on a
+    # headless machine — images are still written to image_save_dir.
+    image_viewer: ""
+
+    status_publish_period: 0.1
+    tf_timeout: 1.5
+
+depth_plane_normal:
+  ros__parameters:
+    depth_topic: /camera/camera_1/depth/image_rect_raw
+    camera_info_topic: /camera/camera_1/depth/camera_info
+    parent_frame: drill_link
+    plane_frame: plane_frame
+
+    # RANSAC plane segmentation (Open3D).
+    ransac_distance_threshold: 0.01
+    ransac_n: 3
+    ransac_iterations: 1000
+
+    # Sub-sample the depth image before building the cloud (1 = every pixel).
+    pixel_stride: 4
+    # Skip the fit when fewer valid depth pixels than this remain.
+    min_points: 100
+    publish_period: 0.1

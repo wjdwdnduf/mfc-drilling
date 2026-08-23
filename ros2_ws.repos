@@ -1,0 +1,18 @@
+repositories:
+  realsense-ros:
+    type: git
+    url: https://github.com/IntelRealSense/realsense-ros.git
+    version: ros2-development
+  apriltag_ros:
+    type: git
+    url: https://github.com/christianrauch/apriltag_ros.git
+    version: main
+  apriltag:
+    type: git
+    url: https://github.com/AprilRobotics/apriltag.git
+    version: master
+  # Optional: Synexens ToF camera driver. Not used in the reported experiments.
+  # synexens_ros2:
+  #   type: git
+  #   url: <vendor repository>
+  #   version: main

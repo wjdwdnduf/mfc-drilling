@@ -1,0 +1,42 @@
+# ROS 2 / colcon
+build/
+install/
+log/
+.colcon/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Model weights and large binaries (distributed via GitHub Releases)
+*.onnx
+*.pt
+*.pth
+*.engine
+*.zip
+*.tar.gz
+
+# Backups / scratch
+backup_*/
+*_backup*
+*(copy)*
+* (copy)*
+*.orig
+*.rej
+*~
+
+# Runtime artifacts
+hole_comu_UIT*.txt
+*.bag
+*.db3
+rosbag2_*/
+kuka_images/
+*.log
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store

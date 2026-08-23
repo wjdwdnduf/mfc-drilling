@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:include filename="$(find realsense2_description)/urdf/_d455.urdf.xacro" />
+
+    <!-- 카메라1: Joint between the end effector and the D455 camera -->
+    <xacro:sensor_d455 parent="end_effector_link" name="camera_1" use_nominal_extrinsics="true">
+        <!-- <origin xyz="-0.145 0 -0.155" rpy="0 ${PI/2} 0" /> -->
+        <origin xyz="-0.375 0 -0.1575" rpy="0 ${PI/2} 0" />
+    </xacro:sensor_d455>
+
+    <!-- 카메라 2: Global 카메라 (신규) -->
+    <xacro:sensor_d455 parent="world" name="camera_2" use_nominal_extrinsics="true">
+        <!-- xyz, rpy는 실제 설치 위치에 맞게 조정 필요 -->
+        <origin xyz="0.25 0.63 0.7" rpy="0 0 0" />
+    </xacro:sensor_d455>
+
+</robot>
